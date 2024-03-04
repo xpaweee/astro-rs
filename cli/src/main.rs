@@ -1,3 +1,17 @@
+mod args;
+
+use args::AstroArgs;
+use clap::Parser;
+
+// async  fn main() -> Result<(), ()>
+// {
+//     let args = AstroArgs::parse();
+//
+//     Ok(())
+// }
+
 fn main() {
-    println!("Hello, world!");
+
+    let args = AstroArgs::parse();
+
 }
