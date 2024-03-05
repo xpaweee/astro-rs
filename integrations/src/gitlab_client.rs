@@ -1,3 +1,4 @@
+use async_trait::async_trait;
 use reqwest::Error;
 use serde::Deserialize;
 
@@ -13,7 +14,7 @@ struct Runner
 
 const GITLAB_API_URL: &str = "https://gitlab.com/api/v4/projects";
 
-async fn get_runners() -> Result<(), Error>{
+pub async fn get_runners() -> Result<(), Error>{
     let client = reqwest::Client::new();
 
     let private_token = "";
