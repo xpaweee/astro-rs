@@ -1,40 +1,29 @@
-use async_trait::async_trait;
 use reqwest::Error;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
-struct Runner
+pub struct Runner
 {
-    id: u32,
-    description: String,
-    ip_address: String,
-    name: String
+    pub id: u32,
+    pub description: Option<String>,
+    pub status: String,
+    pub online: bool,
+    pub ip_address: String,
+    pub name: Option<String>
 }
+const GITLAB_API_URL: &str = "https://gitlab.com/api/v4/runners";
 
-
-const GITLAB_API_URL: &str = "https://gitlab.com/api/v4/projects";
-
-pub async fn get_runners() -> Result<(), Error>{
+pub async fn get_runners() -> Result<Vec<Runner>, Error>{
     let client = reqwest::Client::new();
 
     let private_token = "";
 
-    let req_url = format!("{}?private_token={}", GITLAB_API_URL, private_token);
-
-    let response = client.get(&req_url)
+    let response = client.get(GITLAB_API_URL)
+        .header("PRIVATE-TOKEN", private_token)
         .send()
         .await?
         .json::<Vec<Runner>>()
         .await?;
 
-
-    for runner in response {
-        println!("Name: {}, ID: {}, URL: {}", runner.name, runner.id, runner.ip_address);
-        if let Some(description) = runner.description {
-            println!("Description: {}", description);
-        }
-        println!();
-    }
-
-    Ok(())
+    Ok(response)
 }

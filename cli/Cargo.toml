@@ -10,4 +10,7 @@ authors = ["Krzysztof Kołsut"]
 [dependencies]
 tokio = { version = "1.36.0", features = ["full"] }
 clap = { version = "4.5.1", features = ["derive"] }
+async-trait = "0.1.77"
+integrations = {path="../integrations"}
+prettytable-rs = "0.10.0"
 
