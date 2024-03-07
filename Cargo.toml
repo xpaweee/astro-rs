@@ -4,4 +4,4 @@ codegen-units = 1
 
 [workspace]
 resolver = "2"
-members = ["server", "cli", "integrations"]
+members = ["server", "cli", "integrations", "sdk"]
