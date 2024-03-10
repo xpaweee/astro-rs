@@ -5,6 +5,7 @@ use aes_gcm::{Aes256Gcm, aead::{Aead, generic_array::GenericArray}, KeyInit};
 use aes_gcm::aes::Aes256;
 use aes_gcm::aes::cipher::BlockEncrypt;
 use serde_json::{json, Map, Value};
+use serde_json::Value::String;
 
 
 //TODO: ERROR HANDLING
@@ -90,7 +91,24 @@ impl TokenManager for Aes256GcmProfile
     fn get_token(key: &str) -> Result<String, ()> {
         let config_path = Self::get_config_path();
 
-        //TODO:... to implement
+        if !config_path.exists()
+        {
+            println!("Astro configuration dosen't exist");
+            return Ok(())
+        }
+        let file = fs::read_to_string(&config_path).map_err(|_| ())?;
+        const data: Map<String, Value> = serde_json::from_str(&file).unwrap_or_else(|_| Map::new());
+
+        //TODO:
+        Ok(data)
+
+        // match data.get(key) {
+        //  Some()
+        // }, None =>
+        // {
+        //     println!("Value based on key dosent exist");
+        //     Ok(())
+        // }
     }
 
     fn get_config_path() -> PathBuf {
