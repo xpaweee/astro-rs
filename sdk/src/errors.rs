@@ -18,4 +18,7 @@ EncryptionError = 4,
 #[error("An error occurred during decryption")]
 DecryptionError = 5,
 
+#[error("Invalid data type")]
+InvalidDataType = 6,
+
 }

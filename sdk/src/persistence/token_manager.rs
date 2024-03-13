@@ -10,11 +10,10 @@ use aes_gcm::aes::cipher::BlockEncrypt;
 use aes_gcm::aes::cipher::typenum::U12;
 use base64::{decode, encode};
 use serde_json::{json, Map, Value};
-use serde_json::Value::String as JsonString;
+use serde_json::Value::{String as JsonString};
 use crate::errors::AstroError;
 
 pub struct TokenManager;
-
 
 impl TokenManager
 {
@@ -38,7 +37,7 @@ impl TokenManager
             return Err(AstroError::ProvidedKeyAlreadyExists);
         }
 
-        let encrypted_key = Aes256GcmProfile::encrypt(value);
+        let encrypted_key = Aes256GcmProfile::encrypt(value)?;
 
         file_data.insert(key.to_string(), Value::from(encrypted_key));
         let mut file = File::create(&config_path).map_err(|_| AstroError::Error)?;
@@ -48,7 +47,6 @@ impl TokenManager
         Ok(())
     }
 
-
     pub fn get_token(&self, key: &str) -> Result<String, AstroError> {
         let config_path = Self::get_config_path();
 
@@ -57,20 +55,15 @@ impl TokenManager
            return Err(AstroError::ConfigurationDoesNotExist);
         }
 
-
         let file = fs::read_to_string(&config_path).map_err(|_| AstroError::Error)?;
+        let file_data: Map<String, Value> = serde_json::from_str(&file).unwrap_or_else(|_| Map::new());
+        let value = file_data.get(key);
 
-        let data: Map<String, Value> = serde_json::from_str(&file).unwrap_or_else(|_| Map::new());
-
-        let value = data.get(key);
-
-       if let Some(value) = value {
-           let decryptedValue = Aes256GcmProfile::decrypt(value.as_str().unwrap());
-           return Ok(decryptedValue);
-       }
-
-        else {
-            return Err(AstroError::Error);
+        return if let Some(value) = value {
+            let decrypted_value = Aes256GcmProfile::decrypt(value.as_str().ok_or(AstroError::InvalidDataType)?);
+            Ok(decrypted_value?)
+        } else {
+            Err(AstroError::Error)
         }
     }
 
@@ -88,8 +81,8 @@ impl TokenManager
 pub trait SecurityProfile
 {
     const ENCRYPTION_KEY: &'static str;
-    fn encrypt(value: &str) -> String;
-    fn decrypt(value: &str) -> String;
+    fn encrypt(value: &str) -> Result<String, AstroError>;
+    fn decrypt(value: &str) -> Result<String, AstroError>;
 }
 
 pub struct Aes256GcmProfile;
@@ -98,7 +91,7 @@ impl SecurityProfile for Aes256GcmProfile
 {
     const ENCRYPTION_KEY: &'static str = "0123456789abcdef0123456789abcdef";
 
-    fn encrypt(value: &str) -> String {
+    fn encrypt(value: &str) -> Result<String, AstroError> {
 
         let nonce_bytes: [u8; 12] = [0; 12];
         let nonce = GenericArray::<u8, U12>::from_slice(&nonce_bytes);
@@ -107,9 +100,10 @@ impl SecurityProfile for Aes256GcmProfile
         let aes = Aes256Gcm::new(key);
         let result = aes.encrypt(GenericArray::from_slice(nonce), value.as_bytes().as_ref());
 
-        return encode(result.unwrap());
+
+        return result.map(|value| encode(value)).map_err(|_| AstroError::EncryptionError);
     }
-    fn decrypt(value: &str) -> String {
+    fn decrypt(value: &str) -> Result<String, AstroError> {
 
         let decoded_value = decode(value).unwrap();
 
@@ -120,6 +114,6 @@ impl SecurityProfile for Aes256GcmProfile
         let aes = Aes256Gcm::new(key);
         let result = aes.decrypt(GenericArray::from_slice(nonce), decoded_value.as_ref()).map_err(|e| eprintln!("{}", e));
 
-        return String::from_utf8(result.clone().unwrap()).unwrap();
+        return result.map(|result| String::from_utf8(result).unwrap()).map_err(|_| AstroError::DecryptionError);
     }
 }
