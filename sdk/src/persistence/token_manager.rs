@@ -1,4 +1,3 @@
-
 use std::string::String;
 use std::fs;
 use std::fs::File;
@@ -18,7 +17,6 @@ pub struct TokenManager;
 impl TokenManager
 {
     pub fn save_token(&self, key: &str, value: &str) -> Result<(), AstroError> {
-
         let config_path = Self::get_config_path();
 
         if let Some(parent) = config_path.parent()
@@ -52,7 +50,7 @@ impl TokenManager
 
         if !config_path.exists()
         {
-           return Err(AstroError::ConfigurationDoesNotExist);
+            return Err(AstroError::ConfigurationDoesNotExist);
         }
 
         let file = fs::read_to_string(&config_path).map_err(|_| AstroError::Error)?;
@@ -64,7 +62,7 @@ impl TokenManager
             Ok(decrypted_value?)
         } else {
             Err(AstroError::Error)
-        }
+        };
     }
 
     fn get_config_path() -> PathBuf {
@@ -92,7 +90,6 @@ impl SecurityProfile for Aes256GcmProfile
     const ENCRYPTION_KEY: &'static str = "0123456789abcdef0123456789abcdef";
 
     fn encrypt(value: &str) -> Result<String, AstroError> {
-
         let nonce_bytes: [u8; 12] = [0; 12];
         let nonce = GenericArray::<u8, U12>::from_slice(&nonce_bytes);
 
@@ -100,11 +97,9 @@ impl SecurityProfile for Aes256GcmProfile
         let aes = Aes256Gcm::new(key);
         let result = aes.encrypt(GenericArray::from_slice(nonce), value.as_bytes().as_ref());
 
-
         return result.map(|value| encode(value)).map_err(|_| AstroError::EncryptionError);
     }
     fn decrypt(value: &str) -> Result<String, AstroError> {
-
         let decoded_value = decode(value).unwrap();
 
         let nonce_bytes: [u8; 12] = [0; 12];

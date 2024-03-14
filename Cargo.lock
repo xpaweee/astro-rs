@@ -237,7 +237,7 @@ dependencies = [
  "async-trait",
  "clap",
  "integrations",
- "prettytable-rs",
+ "sdk",
  "tokio",
 ]
 
@@ -1046,7 +1046,10 @@ version = "0.1.0"
 dependencies = [
  "aead",
  "aes-gcm",
+ "async-trait",
  "base64 0.22.0",
+ "integrations",
+ "prettytable-rs",
  "serde_json",
  "thiserror",
 ]

@@ -1,9 +1,8 @@
 use async_trait::async_trait;
-use crate::astro_command::AstroCommand;
-use integrations::gitlab_client::get_runners;
 use prettytable::{Table, row, Cell, Row};
 use prettytable::format;
-
+use crate::cli::astro_command::AstroCommand;
+use integrations::gitlab_client::get_runners;
 pub struct GetRunners { }
 
 #[async_trait]
@@ -13,7 +12,6 @@ impl AstroCommand for GetRunners {
         let runners = get_runners().await.unwrap();
 
         let mut table = Table::new();
-
 
         table.set_format(*format::consts::FORMAT_NO_BORDER_LINE_SEPARATOR);
         table.add_row(row!["ID", "NAME", "ONLINE", "STATUS", "IP", "DESCRIPTION" ]);
@@ -26,8 +24,6 @@ impl AstroCommand for GetRunners {
                 Cell::new(&runner.status.to_string()),
                 Cell::new(&runner.ip_address.to_string()),
                 Cell::new(runner.description.as_deref().unwrap_or(""))
-
-
             ]));
         }
 
@@ -36,3 +32,4 @@ impl AstroCommand for GetRunners {
         Ok(())
     }
 }
+

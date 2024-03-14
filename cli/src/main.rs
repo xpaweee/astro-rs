@@ -1,25 +1,26 @@
 mod args;
-mod runners;
-mod astro_command;
-use args::AstroArgs;
+
 use clap::Parser;
-use runners::get_runners::GetRunners;
-use crate::astro_command::AstroCommand;
+use crate::args::operations::{AstroArgs, OperationType};
+use crate::args::runners::RunnerSubcommand;
 
-
-// async  fn main() -> Result<(), ()>
-// {
-//     let args = AstroArgs::parse();
-//
-//     Ok(())
-// }
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<(), ()> {
 
-    let cmd = GetRunners { };
-    cmd.execute().await.unwrap();
     let args = AstroArgs::parse();
 
+    match args.operation
+    {
+        OperationType::Runner(runner) => match runner.command {
+            RunnerSubcommand::Get(user) => {
+                println!("{}", user.name)
+            }
+            _ => {}
+        },
+        OperationType::Token(_) => {}
+    }
+
+    Ok(())
 
 }

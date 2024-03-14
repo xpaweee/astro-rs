@@ -11,3 +11,6 @@ serde_json = "1.0.114"
 aead = "0.5.2"
 thiserror = "1.0.57"
 base64 = "0.22.0"
+async-trait = "0.1.77"
+prettytable-rs = "0.10.0"
+integrations = {path = "../integrations"}
