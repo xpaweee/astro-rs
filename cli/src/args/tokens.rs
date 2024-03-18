@@ -14,6 +14,8 @@ pub enum TokenSubcommand
     /// Get token
     Get(GetToken),
 
+    Save(GetToken),
+
     /// Delete token
     Delete(DeleteToken)
 }
@@ -21,6 +23,13 @@ pub enum TokenSubcommand
 
 #[derive(Debug, Args)]
 pub struct GetToken
+{
+    /// The name of token
+    pub name: String
+}
+
+#[derive(Debug, Args)]
+pub struct SaveToken
 {
     /// The name of token
     pub name: String

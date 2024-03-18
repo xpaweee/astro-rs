@@ -1,3 +1,3 @@
 mod persistence;
 mod errors;
-mod cli;
+pub mod cli;
