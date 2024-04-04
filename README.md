@@ -8,3 +8,9 @@ Features:
 
 
 - Dynamic scaling of runners: The ability to declare whether runners should be dynamically scaled and to what maximum number of instances.
+
+
+
+
+
+cargo install --path . && cli

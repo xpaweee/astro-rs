@@ -1,5 +1,6 @@
 use async_trait::async_trait;
 use crate::cli::astro_command::AstroCommand;
+use crate::errors::AstroError;
 use crate::persistence::token_manager;
 #[derive(Debug)]
 pub struct GetToken
@@ -21,7 +22,7 @@ impl GetToken
 #[async_trait]
 impl AstroCommand for GetToken
 {
-    async fn execute(&self) -> Result<(), ()> {
+    async fn execute(&self) -> Result<(), AstroError> {
         println!("xd");
         let token_manager = token_manager::TokenManager { };
         let result = token_manager.get_token(self.name.as_str())?;

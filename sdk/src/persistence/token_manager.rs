@@ -65,6 +65,7 @@ impl TokenManager
         };
     }
 
+    //TODO: cfg_accessor
     fn get_config_path() -> PathBuf {
         let config_path: PathBuf = if cfg!(target_os = "windows") {
             PathBuf::from(std::env::var("USERPROFILE").unwrap()).join(".astro\\config")

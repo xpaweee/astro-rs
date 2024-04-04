@@ -1050,6 +1050,7 @@ dependencies = [
  "base64 0.22.0",
  "integrations",
  "prettytable-rs",
+ "serde",
  "serde_json",
  "thiserror",
 ]

@@ -14,3 +14,4 @@ base64 = "0.22.0"
 async-trait = "0.1.77"
 prettytable-rs = "0.10.0"
 integrations = {path = "../integrations"}
+serde = { version = "1.0.197", features = ["derive"] }

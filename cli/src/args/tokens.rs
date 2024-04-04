@@ -11,6 +11,10 @@ pub struct TokenCommand
 #[derive(Debug, Subcommand)]
 pub enum TokenSubcommand
 {
+
+    /// Get list of tokens
+    List(ListTokens),
+
     /// Get token
     Get(GetToken),
 
@@ -40,4 +44,10 @@ pub struct DeleteToken
 {
     /// The name of token
     pub name: String
+}
+
+#[derive(Debug, Args)]
+pub struct ListTokens
+{
+
 }

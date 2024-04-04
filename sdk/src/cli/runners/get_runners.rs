@@ -3,11 +3,13 @@ use prettytable::{Table, row, Cell, Row};
 use prettytable::format;
 use crate::cli::astro_command::AstroCommand;
 use integrations::gitlab_client::get_runners;
+use crate::errors::AstroError;
+
 pub struct GetRunners { }
 
 #[async_trait]
 impl AstroCommand for GetRunners {
-    async fn execute(&self) -> Result<(), ()> {
+    async fn execute(&self) -> Result<(), AstroError> {
 
         let runners = get_runners().await.unwrap();
 

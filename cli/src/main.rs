@@ -6,7 +6,7 @@ use crate::args::operations::{AstroArgs, OperationType};
 use crate::args::runners::RunnerSubcommand;
 use crate::args::tokens::{GetToken, SaveToken, TokenSubcommand};
 use sdk::cli::runners;
-use sdk::cli::tokens::{get_token, save_token};
+use sdk::cli::tokens::{get_token, list_tokens, save_token};
 use integrations::gitlab_client;
 use sdk::cli::astro_command::AstroCommand;
 use sdk::cli::runners::get_runners;
@@ -52,10 +52,9 @@ async fn get_command (operation_type: OperationType) -> Result<(),()>
             {
                 TokenSubcommand::Get(runner) =>
                     {
-                        println!("aaa");
                         let cmd = get_token::GetToken::new(runner.name);
 
-                        let result = cmd.execute().await?;
+                        let result = cmd.execute().await;
                         println!("{:?}", result);
 
 
@@ -63,7 +62,15 @@ async fn get_command (operation_type: OperationType) -> Result<(),()>
 
                 TokenSubcommand::Save(key) =>
                 {
-                    save_token::SaveToken::new(key.name);
+
+                    let cmd = save_token::SaveToken::new(key.name);
+
+                    let _ = cmd.execute().await;
+                }
+
+                TokenSubcommand::List(key) => {
+                    let cmd = list_tokens::ListTokens::new();
+                    let _ = cmd.execute().await;
                 }
                 _ => {}
             }
